@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text sizes -->
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_item_title">17sp</dimen>
+
+    <!-- Spacing -->
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+    <dimen name="padding_xlarge">20dp</dimen>
+    <dimen name="margin_top_xsmall">4dp</dimen>
+    <dimen name="margin_top_small">6dp</dimen>
+
+    <!-- Card: softer, more rounded -->
+    <dimen name="card_elevation">3dp</dimen>
+    <dimen name="card_margin_horizontal">16dp</dimen>
+    <dimen name="card_margin_vertical">8dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
+
+    <!-- Image -->
+    <dimen name="image_height">200dp</dimen>
+
+    <!-- Bottom sheet -->
+    <dimen name="drag_handle_width">40dp</dimen>
+    <dimen name="drag_handle_height">4dp</dimen>
+
+    <!-- Search: pill shape -->
+    <dimen name="search_corner_radius">28dp</dimen>
+    <dimen name="search_elevation">2dp</dimen>
+
+    <!-- Toolbar -->
+    <dimen name="toolbar_elevation">0dp</dimen>
+</resources>

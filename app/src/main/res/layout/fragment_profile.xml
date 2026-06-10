@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/surface"
+    android:padding="@dimen/padding_large">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="1dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/padding_large"
+            android:minWidth="280dp">
+
+            <!-- Foto profil -->
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_circle_initial"
+                android:contentDescription="Foto profil" />
+
+            <TextView
+                android:id="@+id/tvDevName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_medium"
+                android:text="Nama Kamu"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/tvNim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_xsmall"
+                android:text="NIM Kamu"
+                android:textSize="@dimen/text_body"
+                android:textColor="@color/text_secondary" />
+
+            <View
+                android:layout_width="48dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/padding_medium"
+                android:layout_marginBottom="@dimen/padding_medium"
+                android:background="@color/divider" />
+
+            <!-- Social links -->
+            <TextView
+                android:id="@+id/tvGithub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="github.com/username"
+                android:textSize="@dimen/text_body"
+                android:textColor="@color/blue_primary"
+                android:autoLink="web" />
+
+            <TextView
+                android:id="@+id/tvInstagram"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_small"
+                android:text="@instagram"
+                android:textSize="@dimen/text_body"
+                android:textColor="@color/blue_primary" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_small"
+                android:text="email@example.com"
+                android:textSize="@dimen/text_body"
+                android:textColor="@color/blue_primary"
+                android:autoLink="email" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

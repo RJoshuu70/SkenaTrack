@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/surface"
+        android:elevation="@dimen/toolbar_elevation"
+        app:title="SpotLight"
+        app:titleTextColor="@color/text_primary"
+        app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        app:popupTheme="@style/ThemeOverlay.Material3.Light"
+        app:contentInsetStartWithNavigation="0dp" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/navHostFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:elevation="8dp"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:itemActiveIndicatorStyle="@style/BottomNavNoIndicator"
+        app:itemRippleColor="@android:color/transparent"
+        app:itemBackground="@drawable/nav_item_bg"
+        app:menu="@menu/bottom_nav_menu" />
+
+</LinearLayout>

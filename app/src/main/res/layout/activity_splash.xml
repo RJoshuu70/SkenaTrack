@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/bg_splash_gradient">
+
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_skenatrack_logo"
+        android:contentDescription="SkenaTrack Logo"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SkenaTrack"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFFFF"
+        android:letterSpacing="0.02" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temukan tempat paling hits dan cozy"
+        android:textSize="14sp"
+        android:textColor="#B3F5A623"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

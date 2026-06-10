@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SkenaTrack" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Steel Blue sebagai primary, Golden sebagai secondary/accent -->
+        <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/blue_dark</item>
+        <item name="colorSecondary">@color/gold_primary</item>
+        <item name="colorOnSecondary">@color/text_primary</item>
+        <item name="colorTertiary">@color/gold_dark</item>
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- Alias tema lama agar manifest tidak perlu diubah -->
+    <style name="Theme.SpotLight" parent="Theme.SkenaTrack" />
+
+    <style name="BottomNavNoIndicator" parent="Widget.Material3.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/BottomNavNoIndicatorOverlay</item>
+        <item name="itemPaddingTop">2dp</item>
+        <item name="itemPaddingBottom">2dp</item>
+    </style>
+
+    <style name="BottomNavNoIndicatorOverlay">
+        <item name="colorSecondaryContainer">@android:color/transparent</item>
+        <item name="colorOnSecondaryContainer">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.SkenaTrack.NoActionBar" parent="Theme.SkenaTrack" />
+
+    <style name="Theme.SkenaTrack.Dark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/blue_light</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        <item name="colorSecondary">@color/gold_primary</item>
+        <item name="android:statusBarColor">@color/surface</item>
+    </style>
+</resources>
