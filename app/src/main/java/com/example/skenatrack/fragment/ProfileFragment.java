@@ -35,10 +35,10 @@ public class ProfileFragment extends Fragment {
         TextView  tvEmail    = view.findViewById(R.id.tvEmail);
 
         imgProfile.setImageResource(R.drawable.profile);
-        tvDevName.setText("Abia Farrel Kaysan");
-        tvNim.setText("2510511167");
-        tvGithub.setText("github.com/Farrelabia");
-        tvInstagram.setText("@farrelabia");
-        tvEmail.setText("farrelabia@google.com");
+        tvDevName.setText("Kelompok 2");
+        tvNim.setText("001, 009, 023, 029, 032");
+        tvGithub.setText("github.com/RJoshuu70");
+        tvInstagram.setText("@aduhputbool");
+        tvEmail.setText("NIM@mahasiswa.upnvj.ac.id");
     }
 }
