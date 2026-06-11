@@ -206,9 +206,14 @@ app/src/main/
 
 ## Tim Developer
 
-| Nama | NIM | GitHub |
-|---|---|---|
-| Abia Farrel Kaysan | 2510511167 | [@Farrelabia](https://github.com/Farrelabia) |
+| Nama | NIM |
+|---|---|
+| Rapolo Joshua Napitupulu | 2410512001 |
+| Fadilla Putra Karnasyah | 2410512009 |
+| Alif Ilham Rhamdhan | 2410512023 |
+| Sekar Nur Aini | 2410512029 |
+| Okto Ramadhantyo Wibisono | 2410512032 |
+
 
 ---
 
