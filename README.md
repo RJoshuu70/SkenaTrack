@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/src/main/res/drawable/ic_skenatrack_logo.png" width="120" alt="SkenaTrack Logo"/>
+  <img src="app/src/main/res/drawable/ic_spotlight_logo.png" width="120" alt="SkenaTrack Logo"/>
 </p>
 
 <h1 align="center">SkenaTrack</h1>
@@ -10,8 +10,8 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Language-Java-F89820?logo=java&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Min%20SDK-30-1E7FA6"/>
+  <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?logo=kotlin&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Min%20SDK-26-1E7FA6"/>
   <img src="https://img.shields.io/badge/Material-Design%203-F5A623"/>
 </p>
 
@@ -32,7 +32,7 @@
 
 ## Tentang Aplikasi
 
-**SkenaTrack** adalah aplikasi Android berbasis Java yang membantu pengguna menemukan tempat-tempat menarik di area Jabodetabek. Pengguna dapat menjelajahi rekomendasi kafe, museum, kuliner, dan taman, lalu menyimpan tempat favorit mereka secara lokal.
+**SkenaTrack** adalah aplikasi Android berbasis Kotlin yang membantu pengguna menemukan tempat-tempat menarik di area Jabodetabek. Pengguna dapat menjelajahi rekomendasi kafe, museum, kuliner, dan taman, lalu menyimpan tempat favorit mereka secara lokal menggunakan SharedPreferences.
 
 Aplikasi ini dikembangkan sebagai **Final Project** mata kuliah *Pemrograman Berorientasi Objek* dengan menerapkan konsep-konsep inti OOP pada platform Android.
 
@@ -46,10 +46,10 @@ Aplikasi ini dikembangkan sebagai **Final Project** mata kuliah *Pemrograman Ber
 | 🏷️ **Filter Kategori** | Chip filter: Semua · CAFE · MUSEUM · KULINER · TAMAN |
 | ↕️ **Sorting** | Urutkan by rating tertinggi/terendah atau nama A-Z/Z-A |
 | ❤️ **Favorit** | Tandai tempat favorit, tersimpan lokal via SharedPreferences |
-| 📋 **Detail Tempat** | Bottom Sheet berisi foto, kategori, lokasi, rating, deskripsi |
-| 🗺️ **Buka Maps** | Langsung buka Google Maps dari detail tempat |
-| 🌙 **Dark Mode** | Toggle dark/light mode dari menu toolbar |
-| ✨ **Splash Screen** | Animasi splash screen gradient biru-emas 2 detik |
+| 📋 **Detail Tempat** | Bottom Sheet berisi foto, kategori, lokasi, rating, dan tombol aksi |
+| 🗺️ **Buka Maps** | Langsung buka Google Maps dari halaman detail tempat |
+| 🌙 **Dark Mode** | Toggle dark/light mode dari menu toolbar, preferensi disimpan lokal |
+| ✨ **Splash Screen** | Splash screen dengan latar gradient ungu-gelap selama 2 detik |
 
 ---
 
@@ -64,44 +64,66 @@ Aplikasi ini dikembangkan sebagai **Final Project** mata kuliah *Pemrograman Ber
 ### Konsep OOP yang Diterapkan
 
 #### 1. Encapsulation
-Semua field di class `Place` bersifat `private` dan hanya dapat diakses melalui getter. `FavoriteManager` menyembunyikan implementasi SharedPreferences di balik method publik. `DataSource` menyembunyikan logika filter dan sort dari pemanggil.
 
-```java
-// Place.java — semua field private, hanya bisa diakses via getter
-public class Place implements Parcelable {
-    private final String name;
-    private final PlaceCategory category;
-    private final float rating;
-    // ...
-    public String getName()  { return name; }
-    public float  getRating(){ return rating; }
+Semua field di data class `Place` bersifat `val` (immutable) dan hanya dapat dibaca dari luar — tidak bisa diubah setelah dibuat. `FavoriteManager` menyembunyikan detail implementasi SharedPreferences di balik method publik yang sederhana. `DataSource` menyembunyikan logika filter dan sorting sehingga pemanggil (`HomeFragment`) tidak perlu tahu cara kerjanya.
+
+```kotlin
+// Place.kt — field immutable, hanya bisa dibaca via property
+data class Place(
+    val name: String,
+    val category: PlaceCategory,
+    val location: String,
+    val rating: Float,
+    val imageRes: Int,
+    val mapUrl: String
+) : Parcelable
+```
+
+```kotlin
+// FavoriteManager.kt — implementasi SharedPreferences tersembunyi
+object FavoriteManager {
+    private fun getPrefs(context: Context): SharedPreferences { ... }
+    fun isFavorite(context: Context, placeName: String): Boolean { ... }
+    fun addFavorite(context: Context, placeName: String) { ... }
+    fun removeFavorite(context: Context, placeName: String) { ... }
 }
 ```
 
 #### 2. Inheritance
+
 Setiap komponen Android mewarisi class dari framework:
 
 | Class | Mewarisi dari |
 |---|---|
 | `SplashActivity`, `MainActivity` | `AppCompatActivity` |
-| `HomeFragment`, `AboutFragment`, dll. | `Fragment` |
+| `HomeFragment`, `AboutFragment`, `AboutAppFragment`, `ProfileFragment` | `Fragment` |
 | `PlaceDetailBottomSheet` | `BottomSheetDialogFragment` |
-| `PlaceAdapter` | `RecyclerView.Adapter` |
-| `PlaceViewHolder`, `SkeletonViewHolder` | `RecyclerView.ViewHolder` |
+| `PlaceAdapter` | `RecyclerView.Adapter<RecyclerView.ViewHolder>` |
+| `PlaceViewHolder` | `RecyclerView.ViewHolder` |
+| `SkeletonViewHolder` | `RecyclerView.ViewHolder` |
 | `AboutPagerAdapter` | `FragmentStateAdapter` |
 
 #### 3. Polymorphism
-`PlaceAdapter` mengoverride `getItemViewType()`, `onCreateViewHolder()`, dan `onBindViewHolder()` sehingga satu adapter dapat menangani dua tipe tampilan berbeda (item normal vs. skeleton loading) secara transparan.
 
-```java
-@Override
-public int getItemViewType(int position) {
-    return isSkeleton ? TYPE_SKELETON : TYPE_PLACE;
+`PlaceAdapter` meng-override `getItemViewType()`, `onCreateViewHolder()`, dan `onBindViewHolder()` sehingga satu adapter dapat menangani dua tipe tampilan berbeda — item normal (`PlaceViewHolder`) dan skeleton loading (`SkeletonViewHolder`) — secara transparan berdasarkan state `isSkeleton`.
+
+```kotlin
+// PlaceAdapter.kt
+override fun getItemViewType(position: Int): Int {
+    return if (isSkeleton) TYPE_SKELETON else TYPE_PLACE
+}
+
+override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    return when (viewType) {
+        TYPE_SKELETON -> SkeletonViewHolder(...)
+        else          -> PlaceViewHolder(...)
+    }
 }
 ```
 
 #### 4. Abstraction *(bonus)*
-Interface `OnItemClickListener` dan `OnFavoriteChangedListener` mendefinisikan kontrak tanpa mengekspos implementasi — memisahkan *what* dari *how*.
+
+`PlaceDetailBottomSheet` mengekspos property `onFavoriteChanged: (() -> Unit)?` sebagai kontrak callback tanpa mengekspos implementasi internalnya ke `HomeFragment`. Pemanggil cukup mengisi closure-nya tanpa tahu bagaimana dialog memproses aksi favorit.
 
 ---
 
@@ -109,27 +131,26 @@ Interface `OnItemClickListener` dan `OnFavoriteChangedListener` mendefinisikan k
 
 ```kotlin
 // Core AndroidX
-implementation(libs.appcompat)          // AppCompatActivity, dark mode
-implementation(libs.activity)           // ComponentActivity base
-implementation(libs.constraintlayout)   // Layout support
+implementation(libs.androidx.core.ktx)          // v1.17.0
+implementation(libs.androidx.lifecycle.runtime.ktx)
 
 // Material Design 3
-implementation(libs.material)
+implementation("com.google.android.material:material:1.12.0")
 // ↳ MaterialToolbar, BottomNavigationView, MaterialCardView,
-//   MaterialButton, MaterialAlertDialog, Chip/ChipGroup,
-//   BottomSheetDialogFragment, MaterialSwitch, TabLayout,
-//   TextInputLayout, Snackbar
+//   BottomSheetDialogFragment, MaterialAlertDialogBuilder,
+//   MaterialSwitch, Chip/ChipGroup, Snackbar, TextInputLayout
 
 // Navigation Component
-implementation(libs.navigation.fragment)        // NavHostFragment, NavController
-implementation(libs.navigation.ui)              // setupWithNavController()
-implementation(libs.navigation.runtime.android) // runtime support
+implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+// ↳ NavHostFragment, NavController, setupWithNavController()
 
-// RecyclerView
-implementation(libs.recyclerview)
+// ViewPager2 (tab layout di AboutFragment)
+implementation(libs.androidx.viewpager2)        // v1.0.0
 
-// ViewPager2 (diperlukan AboutFragment — tab layout)
-implementation(libs.viewpager2)
+// Kotlin Parcelize Plugin
+id("kotlin-parcelize")
+// ↳ @Parcelize pada data class Place (antar-Fragment via Bundle)
 ```
 
 Versi lengkap tersedia di [`gradle/libs.versions.toml`](gradle/libs.versions.toml).
@@ -142,7 +163,7 @@ Versi lengkap tersedia di [`gradle/libs.versions.toml`](gradle/libs.versions.tom
 
 - Android Studio **Hedgehog** atau lebih baru
 - JDK 11+
-- Android SDK API 30 (Android 11) ke atas
+- Android SDK API 26 (Android 8.0) ke atas
 
 ### Langkah
 
@@ -159,14 +180,15 @@ cd SkenaTrack
 
 # 4. Run
 #    Tekan tombol ▶ atau Shift+F10
-#    Pilih emulator (API 30+) atau device fisik
+#    Pilih emulator (API 26+) atau device fisik
 ```
 
 ### Catatan Penting
 
-- `minSdk = 30` — wajib menggunakan `String.isBlank()` (Java 11+)
-- Tidak menggunakan Kotlin, Compose, atau ViewBinding
+- `minSdk = 26` — menggunakan ViewBinding, Navigation Component, dan Kotlin Parcelize
+- Seluruh UI menggunakan **XML layout** (bukan Jetpack Compose), meskipun Compose BOM tersedia di `build.gradle.kts` sebagai dependency bawaan template
 - Data tempat bersifat statis (in-memory `DataSource`); siap dimigrasi ke SQLite/Room
+- Favorit disimpan menggunakan **SharedPreferences** (tidak hilang saat app ditutup)
 
 ---
 
@@ -174,32 +196,45 @@ cd SkenaTrack
 
 ```
 app/src/main/
-├── java/com/example/skenatrack/
+├── java/com/example/spotlight/
 │   ├── model/
-│   │   ├── Place.java            ← Data class (Encapsulation + Parcelable)
-│   │   └── PlaceCategory.java   ← Enum kategori (CAFE, MUSEUM, KULINER, TAMAN)
+│   │   ├── Place.kt                  ← Data class (Encapsulation + Parcelable)
+│   │   └── PlaceCategory.kt          ← Enum kategori (CAFE, MUSEUM, KULINER, TAMAN)
 │   ├── datasource/
-│   │   └── DataSource.java      ← Sumber data + logika filter & sort
+│   │   └── DataSource.kt             ← Sumber data + logika filter & sort (7 tempat)
 │   ├── adapter/
-│   │   ├── PlaceAdapter.java    ← RecyclerView adapter (Inheritance + Polymorphism)
-│   │   └── AboutPagerAdapter.java
+│   │   ├── PlaceAdapter.kt           ← RecyclerView adapter (Inheritance + Polymorphism)
+│   │   └── AboutPagerAdapter.kt      ← FragmentStateAdapter untuk ViewPager2
 │   ├── fragment/
-│   │   ├── HomeFragment.java    ← List tempat, search, chip, sort
-│   │   ├── AboutFragment.java   ← Tab container (ViewPager2)
-│   │   ├── AboutAppFragment.java
-│   │   └── ProfileFragment.java
+│   │   ├── HomeFragment.kt           ← List tempat, search debounce, chip, sort
+│   │   ├── AboutFragment.kt          ← Tab container ViewPager2 (TabLayout)
+│   │   ├── AboutAppFragment.kt       ← Tab "Tentang App"
+│   │   └── ProfileFragment.kt        ← Tab "Profil Developer"
 │   ├── utils/
-│   │   └── FavoriteManager.java ← SharedPreferences wrapper (Encapsulation)
-│   ├── MainActivity.java        ← Host Navigation + Toolbar + Dark Mode
-│   ├── SplashActivity.java      ← Splash screen 2 detik
-│   └── PlaceDetailBottomSheet.java ← Detail tempat + favorit
+│   │   └── FavoriteManager.kt        ← SharedPreferences wrapper (Encapsulation)
+│   ├── MainActivity.kt               ← Host Navigation + Toolbar + Dark Mode toggle
+│   ├── SplashActivity.kt             ← Splash screen 2 detik → MainActivity
+│   └── PlaceDetailBottomSheet.kt     ← BottomSheetDialogFragment (detail + favorit + maps)
 └── res/
-    ├── layout/                  ← XML layouts (8 file)
-    ├── drawable/                ← Ikon, gambar, gradients
-    ├── navigation/nav_graph.xml ← Peta navigasi antar fragment
-    ├── menu/                    ← Bottom nav + options menu
-    ├── color/                   ← Color state selectors
-    └── values/                  ← colors.xml, themes.xml, dimens.xml, strings.xml
+    ├── layout/                       ← 7 file XML layout
+    │   ├── activity_main.xml         ← Toolbar + NavHostFragment + BottomNavigationView
+    │   ├── activity_splash.xml       ← Logo + nama app + gradient background
+    │   ├── fragment_home.xml         ← SearchBar + ChipGroup + RecyclerView
+    │   ├── fragment_about.xml        ← TabLayout + ViewPager2
+    │   ├── fragment_about_app.xml    ← Konten tab "Tentang App"
+    │   ├── fragment_profile.xml      ← Foto + info developer
+    │   ├── item_place.xml            ← Card item (foto + nama + kategori + lokasi + rating)
+    │   ├── item_place_skeleton.xml   ← Skeleton loading placeholder
+    │   └── bottom_sheet_place_detail.xml ← Detail + tombol Maps & Favorit
+    ├── drawable/                     ← 7 foto tempat + ikon + gradient + selector
+    ├── navigation/nav_graph.xml      ← Graf navigasi: HomeFragment ↔ AboutFragment
+    ├── menu/                         ← bottom_nav_menu.xml + option_menu.xml
+    ├── color/nav_item_color.xml      ← Color state list untuk bottom nav
+    └── values/
+        ├── colors.xml                ← Palette ungu + surface + text tokens
+        ├── themes.xml                ← Theme.SpotLight (Light) + Theme.SpotLight.Dark
+        ├── dimens.xml                ← Spacing & sizing tokens
+        └── strings.xml              ← String resources
 ```
 
 ---
@@ -213,7 +248,6 @@ app/src/main/
 | Alif Ilham Rhamdhan | 2410512023 |
 | Sekar Nur Aini | 2410512029 |
 | Okto Ramadhantyo Wibisono | 2410512032 |
-
 
 ---
 
